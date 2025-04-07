@@ -1,0 +1,8 @@
+* Go game
+:properties:
+:custom_id: 7ef1c2cccbd70f30d0dcced75f20dc2f
+:id: 7ef1c2cccbd70f30d0dcced75f20dc2f
+:date: 2025-04-07 15:32:53 周一
+:end:
+
+围棋程序
