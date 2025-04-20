@@ -6,3 +6,6 @@
 :end:
 
 围棋程序
+
+[[demo][./demo/demo.png]]
+
