@@ -76,6 +76,11 @@ class GoBoard:
 
     def place_stone(self, x, y):
         """落子"""
+
+        # TODO:
+        # 1. 当前落子之后，如果存在可以被提掉的对方子，则当前的落子成立
+        # 2. 当前落子之后，如果不存在可以被提掉的对方子，则当前位置不能落子
+
         if not (0 <= x < self.size and 0 <= y < self.size): # 越界
             return False
         if self.board[x, y] != 0: # 已经有子了
