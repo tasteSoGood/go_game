@@ -7,5 +7,5 @@
 
 围棋程序
 
-[[demo][./demo/demo.png]]
+[[file:./demo/demo.png]]
 
