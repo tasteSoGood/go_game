@@ -7,42 +7,13 @@
 #------------------------------------------------
 import tkinter as tk
 from tkinter import messagebox
-import numpy as np
+from backend import GoBoard
 
-
-class GoBoard:
-    """
-    后台的棋盘，可以用于沟通用户与前端或者ai程序与前端
-    """
-    def __init__(self, board_size=19):
-        self.size = board_size
-        self.board = np.zeros((board_size, board_size), dtype=int)
-        # self.board = np.random.randint(-1, 2, (board_size, board_size))
-        self.current_player = "black"
-
-    def place_stone(self, x, y):
-        if not (0 <= x < self.size and 0 <= y < self.size): # 越界
-            return False
-        if self.board[x, y] != 0: # 已经有子了
-            return False
-        if self.current_player == "white":
-            self.board[x, y] = 1 # 用1表示落上白子
-            self.current_player = "black"
-            return True
-        elif self.current_player == "black":
-            self.board[x, y] = -1 # 用0表示落上黑子
-            self.current_player = "white"
-            return True
-        return False # 其他情况
-
-    def reset(self):
-        """ 重置 """
-        self.board = np.zeros((self.size, self.size), dtype=int)
-        self.current_player = "black"
 
 class GoGUI(tk.Tk):
     def __init__(self, board_size=19):
         super().__init__()
+        self.title("围棋游戏")
         self.board_size = board_size
         self.cell_size = 30 # 网格的宽度
         self.board = GoBoard(board_size) # 后台棋盘类
@@ -62,7 +33,7 @@ class GoGUI(tk.Tk):
 
         # 绑定点击事件
         self.canvas.bind("<Button-1>", self.on_click)
-        self.bind("<q>", lambda e: self.destroy)
+        self.bind("<q>", lambda e: self.destroy())
         
         # 控制按钮
         self.btn_frame = tk.Frame(self)
@@ -144,10 +115,4 @@ class GoGUI(tk.Tk):
                     cx + 3, cy + 3,
                     fill="black"
                 )
-
-
-if __name__ == "__main__":
-    app = GoGUI(board_size=19)
-    app.title("Python Go with GnuGo")
-    app.mainloop()
 
