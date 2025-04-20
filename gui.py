@@ -1,0 +1,153 @@
+#------------------------------------------------
+# name: gui.py
+# author: taster
+# date: 2025-04-19 19:20:39 星期六
+# id: 66fa17e9a5fccc186c754a998de66a07
+# description: 围棋游戏的前端
+#------------------------------------------------
+import tkinter as tk
+from tkinter import messagebox
+import numpy as np
+
+
+class GoBoard:
+    """
+    后台的棋盘，可以用于沟通用户与前端或者ai程序与前端
+    """
+    def __init__(self, board_size=19):
+        self.size = board_size
+        self.board = np.zeros((board_size, board_size), dtype=int)
+        # self.board = np.random.randint(-1, 2, (board_size, board_size))
+        self.current_player = "black"
+
+    def place_stone(self, x, y):
+        if not (0 <= x < self.size and 0 <= y < self.size): # 越界
+            return False
+        if self.board[x, y] != 0: # 已经有子了
+            return False
+        if self.current_player == "white":
+            self.board[x, y] = 1 # 用1表示落上白子
+            self.current_player = "black"
+            return True
+        elif self.current_player == "black":
+            self.board[x, y] = -1 # 用0表示落上黑子
+            self.current_player = "white"
+            return True
+        return False # 其他情况
+
+    def reset(self):
+        """ 重置 """
+        self.board = np.zeros((self.size, self.size), dtype=int)
+        self.current_player = "black"
+
+class GoGUI(tk.Tk):
+    def __init__(self, board_size=19):
+        super().__init__()
+        self.board_size = board_size
+        self.cell_size = 30 # 网格的宽度
+        self.board = GoBoard(board_size) # 后台棋盘类
+        self.init_ui()
+
+    def init_ui(self):
+        # 棋盘画布
+        self.canvas = tk.Canvas(
+            self, 
+            width=self.cell_size * (self.board_size + 1),
+            height=self.cell_size * (self.board_size + 1),
+            bg="#DEB887"
+        )
+        self.canvas.pack()
+        self.draw_grid()
+        self.draw_stone()
+
+        # 绑定点击事件
+        self.canvas.bind("<Button-1>", self.on_click)
+        self.bind("<q>", lambda e: self.destroy)
+        
+        # 控制按钮
+        self.btn_frame = tk.Frame(self)
+        self.btn_frame.pack(pady=10)
+        # tk.Button(self.btn_frame, text="AI Move", command=self.ai_move).pack(side=tk.LEFT)
+        tk.Button(self.btn_frame, text="Reset", command=self.reset).pack(side=tk.LEFT)
+
+    def reset(self):
+        """重置棋盘"""
+        self.board.reset()
+        self.canvas.delete("all")
+        self.draw_grid()
+        self.draw_stone()
+
+    def on_click(self, event):
+        """
+        将点击坐标转换为棋盘坐标
+        """
+        x = round((event.x - self.cell_size) / self.cell_size)
+        y = round((event.y - self.cell_size) / self.cell_size)
+        flag = self.board.place_stone(x, y)
+        if flag:
+            self.canvas.delete("all")
+            self.draw_grid()
+            self.draw_stone()
+        if not flag:
+            messagebox.showerror("Invalid Move", "此处不能落子！")
+
+    def draw_stone(self):
+        """
+        在棋盘上绘制棋子
+        """
+        for i in range(self.board.size):
+            for j in range(self.board.size):
+                cx = self.cell_size * (i + 1)
+                cy = self.cell_size * (j + 1)
+                if self.board.board[i, j] == 1:
+                    color = "white"
+                elif self.board.board[i, j] == -1:
+                    color = "black"
+                else:
+                    continue
+                self.canvas.create_oval(
+                    cx - 12, cy - 12,
+                    cx + 12, cy + 12,
+                    fill=color, outline="black"
+                )
+
+    def draw_grid(self):
+        """
+        绘制棋盘网格线
+        """
+        for i in range(self.board_size):
+            x = self.cell_size * (i + 1)
+            self.canvas.create_line(
+                self.cell_size, x,
+                self.cell_size * self.board_size, x
+            )
+            self.canvas.create_line(
+                x, self.cell_size,
+                x, self.cell_size * self.board_size
+            )
+        
+        # 绘制特殊标记点（星位）
+        star_points = []
+        if self.board_size == 19:
+            star_points = [3, 9, 15]
+        elif self.board_size == 13:
+            star_points = [3, 6, 9, 12]
+        elif self.board_size == 9:
+            star_points = [2, 4, 6, 8]
+        
+        for x in star_points:
+            for y in star_points:
+                cx = self.cell_size * (x + 1)
+                cy = self.cell_size * (y + 1)
+                self.canvas.create_oval(
+                    cx - 3, cy - 3,
+                    cx + 3, cy + 3,
+                    fill="black"
+                )
+
+
+if __name__ == "__main__":
+    app = GoGUI(board_size=19)
+    app.title("Python Go with GnuGo")
+    app.mainloop()
+

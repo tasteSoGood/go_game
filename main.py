@@ -26,27 +26,20 @@ class GoGame:
         """
         self.board_size = board_size
         self.chess_board = np.zeros((board_size, board_size), dtype=int)
-        self.current_player = 1  # 1表示黑棋，-1表示白棋
-        self.game_over = False
-        self.white_captures = 0  # 白棋提子数
-        self.black_captures = 0   # 黑棋提子数
-        self.white_mu = 0         # 白棋目数
-        self.black_mu = 0         # 黑棋目数
-        self.komi = 6.5           # 贴目
-        self.last_move = None    # 上一步落子位置
-        self.passed_last = False  # 上一步是否pass
+        self.reset()
         
     def reset(self):
         """重置游戏"""
-        self.chess_board.fill(0)
-        self.current_player = 1
-        self.game_over = False
-        self.white_captures = 0
-        self.black_captures = 0
-        self.white_mu = 0
-        self.black_mu = 0
-        self.last_move = None
-        self.passed_last = False
+        self.chess_board    = np.zeros((self.board_size, self.board_size), dtype=int)
+        self.current_player = 1     # 1表示黑棋，-1表示白棋
+        self.game_over      = False
+        self.white_captures = 0     # 白棋提子数
+        self.black_captures = 0     # 黑棋提子数
+        self.white_mu       = 0     # 白棋目数
+        self.black_mu       = 0     # 黑棋目数
+        self.komi           = 6.5   # 贴目
+        self.last_move      = None  # 上一步落子位置
+        self.passed_last    = False # 上一步是否pass
     
     def is_valid_move(self, x, y):
         """
