@@ -22,6 +22,15 @@ class GoBoard:
         self.last_ko_position = None  # 劫的位置
         self.last_ko_player = None    # 上次触发劫的玩家
 
+        # 存储历史记录
+        self.history = [(
+            self.board.copy(),
+            self.current_player,
+            self.last_ko_position,
+            self.last_ko_player,
+        )]
+        self.pointer = 0
+
     def cal_group_qi(self, x, y, temp_board):
         """
         计算指定位置所在的连通块的气（基于一个临时的棋盘）
@@ -119,6 +128,15 @@ class GoBoard:
 
         # 切换当前玩家
         self.current_player = "white" if self.current_player == "black" else "black"
+
+        # 存储到历史，如果已经回退了，挤掉多余的历史记录
+        self.history = self.history[:self.pointer + 1] + [(
+            self.board.copy(),
+            self.current_player,
+            self.last_ko_position,
+            self.last_ko_player,
+        )]
+        self.pointer += 1
         return True
 
     def reset(self):
@@ -127,4 +145,34 @@ class GoBoard:
         self.current_player = "black"
         self.last_ko_position = None
         self.last_ko_player = None
+        self.history = [(
+            self.board.copy(),
+            self.current_player,
+            self.last_ko_position,
+            self.last_ko_player,
+        )] # 清空历史记录
+        self.pointer = 0
 
+    def undo(self):
+        """
+        回退一步
+        """
+        if self.pointer == 0:
+            return
+        self.pointer -= 1
+        self.board            = self.history[self.pointer][0]
+        self.current_player   = self.history[self.pointer][1]
+        self.last_ko_position = self.history[self.pointer][2]
+        self.last_ko_player   = self.history[self.pointer][3]
+
+    def redo(self):
+        """
+        向前一步
+        """
+        if self.pointer == len(self.history) - 1:
+            return
+        self.pointer += 1
+        self.board            = self.history[self.pointer][0]
+        self.current_player   = self.history[self.pointer][1]
+        self.last_ko_position = self.history[self.pointer][2]
+        self.last_ko_player   = self.history[self.pointer][3]

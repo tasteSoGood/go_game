@@ -40,10 +40,26 @@ class GoGUI(tk.Tk):
         self.btn_frame.pack(pady=10)
         # tk.Button(self.btn_frame, text="AI Move", command=self.ai_move).pack(side=tk.LEFT)
         tk.Button(self.btn_frame, text="Reset", command=self.reset).pack(side=tk.LEFT)
+        tk.Button(self.btn_frame, text="Undo", command=self.undo).pack(side=tk.LEFT)
+        tk.Button(self.btn_frame, text="Redo", command=self.redo).pack(side=tk.LEFT)
 
     def reset(self):
         """重置棋盘"""
         self.board.reset()
+        self.canvas.delete("all")
+        self.draw_grid()
+        self.draw_stone()
+
+    def undo(self):
+        """退回一步"""
+        self.board.undo()
+        self.canvas.delete("all")
+        self.draw_grid()
+        self.draw_stone()
+
+    def redo(self):
+        """向前一步"""
+        self.board.redo()
         self.canvas.delete("all")
         self.draw_grid()
         self.draw_stone()
