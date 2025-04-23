@@ -6,8 +6,13 @@
 # description: 一个简单的围棋程序
 #------------------------------------------------
 from gui import GoGUI
+from tui import GoTUI
 
 if __name__ == "__main__":
-    app = GoGUI(board_size=19)
-    app.mainloop()
+    # 文本用户界面
+    game = GoTUI(board_size=19)
+    game.run()
+    # # 窗口用户界面
+    # game = GoGUI(board_size=19)
+    # game.mainloop()
 
