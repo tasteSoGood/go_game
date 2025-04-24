@@ -13,6 +13,6 @@ if __name__ == "__main__":
     # game = GoTUI(board_size=19, ai=True)
     # game.run()
     # 窗口用户界面
-    game = GoGUI(board_size=19)
+    game = GoGUI(board_size=19, ai=True)
     game.mainloop()
 

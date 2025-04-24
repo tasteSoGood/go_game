@@ -7,7 +7,7 @@
 #------------------------------------------------
 import tkinter as tk
 from tkinter import messagebox
-from src.backend import TempGoBoard, GnugoAI
+from src.backend import GoBoard, GnugoAI
 
 
 class GoGUI(tk.Tk):
@@ -20,7 +20,7 @@ class GoGUI(tk.Tk):
         if ai:
             self.board = GnugoAI(board_size) # 后台棋盘类
         else:
-            self.board = TempGoBoard(board_size)
+            self.board = GoBoard(board_size)
         self.init_ui()
 
     def init_ui(self):
