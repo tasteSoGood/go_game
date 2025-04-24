@@ -7,10 +7,15 @@
 #------------------------------------------------
 import os
 from backend import GoBoard
+from gnugo_ai import GnugoAI
 
 class GoTUI:
-    def __init__(self, board_size=19):
-        self.board = GoBoard(board_size)
+    def __init__(self, board_size=19, ai=False):
+        self.ai = ai
+        if ai:
+            self.board = GnugoAI(board_size)
+        else:
+            self.board = GoBoard(board_size)
         self.board_size = board_size
         # 坐标字母映射（跳过I）
         self.letters = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[:board_size]
@@ -90,7 +95,10 @@ class GoTUI:
             print("  A1: 落子 | undo/u: 悔棋 | redo/r: 重做")
             print("  reset/c: 重置 | exit/q: 退出")
             
-            cmd = input(">>> ").strip()
-            success = self.parse_input(cmd)
-            if not success:
-                input("按回车继续...")
+            if self.board.current_player == "white" and self.ai:
+                self.board.ai_move()
+            else:
+                cmd = input(">>> ").strip()
+                success = self.parse_input(cmd)
+                if not success:
+                    input("按回车继续...")

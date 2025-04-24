@@ -8,15 +8,20 @@
 import tkinter as tk
 from tkinter import messagebox
 from backend import GoBoard
+from gnugo_ai import GnugoAI
 
 
 class GoGUI(tk.Tk):
-    def __init__(self, board_size=19):
+    def __init__(self, board_size=19, ai=False):
         super().__init__()
         self.title("围棋游戏")
         self.board_size = board_size
         self.cell_size = 30 # 网格的宽度
-        self.board = GoBoard(board_size) # 后台棋盘类
+        self.ai = ai
+        if ai:
+            self.board = GnugoAI(board_size) # 后台棋盘类
+        else:
+            self.board = GoBoard(board_size)
         self.init_ui()
 
     def init_ui(self):
@@ -75,6 +80,11 @@ class GoGUI(tk.Tk):
             self.canvas.delete("all")
             self.draw_grid()
             self.draw_stone()
+            if self.ai and self.board.current_player == "white":
+                self.board.ai_move()
+                self.canvas.delete("all")
+                self.draw_grid()
+                self.draw_stone()
         if not flag:
             messagebox.showerror("Invalid Move", "此处不能落子！")
 
