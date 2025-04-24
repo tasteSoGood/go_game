@@ -45,7 +45,7 @@ class GoTUI:
         for y in range(self.board_size):
             line = []
             for x in range(self.board_size):
-                stone = self.board.board[x, y]
+                stone = self.board.cur_board[x, y]
                 if stone == 1:
                     line.append('○')  # 白子
                 elif stone == -1:
@@ -89,13 +89,13 @@ class GoTUI:
         """主循环"""
         while True:
             self.clear_screen()
-            print(f"当前玩家: {self.board.current_player}")
+            print(f"当前玩家: {self.board.cur_player}")
             self.print_board()
             print("命令说明:")
             print("  A1: 落子 | undo/u: 悔棋 | redo/r: 重做")
             print("  reset/c: 重置 | exit/q: 退出")
             
-            if self.board.current_player == "white" and self.ai:
+            if self.board.cur_player == "white" and self.ai:
                 self.board.ai_move()
             else:
                 cmd = input(">>> ").strip()
