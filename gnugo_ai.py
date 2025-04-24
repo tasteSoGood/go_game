@@ -50,3 +50,15 @@ class GnugoAI(GoBoard):
             x = ord(move[0].upper()) - ord('A')
             y = int(move[1:]) - 1
             self.place_stone(x, y)
+
+    def reset(self):
+        self._reset()
+        self.send_command("clear_board")
+
+    def undo(self):
+        self._undo()
+        self._undo()
+        self.send_command("undo")
+
+    def redo(self):
+        self._redo()

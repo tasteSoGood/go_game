@@ -12,3 +12,5 @@
 围棋游戏存储的通用数据格式为[[https://www.red-bean.com/sgf/index.html][SGF]]
 
 如果需要与现有的AI接口合并到一起，则需要有保存和解析SGF文件的方法
+
+GnuGO: [[https://www.gnu.org/software/gnugo/gnugo_19.html#SEC193]]

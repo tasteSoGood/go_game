@@ -139,7 +139,7 @@ class GoBoard:
         self.pointer += 1
         return True
 
-    def reset(self):
+    def _reset(self):
         """ 重置 """
         self.board = np.zeros((self.size, self.size), dtype=int)
         self.current_player = "black"
@@ -153,7 +153,7 @@ class GoBoard:
         )] # 清空历史记录
         self.pointer = 0
 
-    def undo(self):
+    def _undo(self):
         """
         回退一步
         """
@@ -165,7 +165,7 @@ class GoBoard:
         self.last_ko_position = self.history[self.pointer][2]
         self.last_ko_player   = self.history[self.pointer][3]
 
-    def redo(self):
+    def _redo(self):
         """
         向前一步
         """
@@ -176,3 +176,12 @@ class GoBoard:
         self.current_player   = self.history[self.pointer][1]
         self.last_ko_position = self.history[self.pointer][2]
         self.last_ko_player   = self.history[self.pointer][3]
+
+    def reset(self):
+        self._reset()
+
+    def undo(self):
+        self._undo()
+
+    def redo(self):
+        self._redo()
