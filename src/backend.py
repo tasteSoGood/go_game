@@ -5,10 +5,58 @@
 # id: 41361e00bc9851721e712f1881018e7c
 # description: 棋盘类及其他后台逻辑
 #------------------------------------------------
+from abc import abstractmethod
 import numpy as np
 from collections import deque
 import subprocess
 import re
+from src.linklist import DoubleLink
+
+
+class Board:
+    """
+    用于描述2 player的2维棋盘类游戏的基类
+    """
+    def __init__(self, board_size):
+        self.size           = board_size
+        self.state          = DoubleLink() # 状态保存
+        self.state.append({
+            'board'  : np.zeros((board_size, board_size), dtype=int),
+            'player' : "black",
+            'move'   : (None, None) # 当前的棋步
+        })
+
+    @property
+    def cur_board(self):
+        return self.state.current_state()['board'].copy()
+
+    @property
+    def cur_player(self):
+        return self.state.current_state()['player'].copy()
+
+    @property
+    def cur_move(self):
+        return self.state.current_state()['move'].copy()
+
+    def undo(self):
+        self.state.move_previous()
+
+    def redo(self):
+        self.state.move_next()
+
+    def reset(self):
+        self.state.clear()
+
+    @abstractmethod
+    def rule(self, move):
+        """接收一个棋步，把棋局转换到下一个状态（定义游戏规则）"""
+        raise NotImplementedError("规则函数需要定义")
+
+    def place_stone(self, move):
+        new_state = self.rule(move)
+        if new_state is None: # 尝试的棋步不符合规则，静默处理
+            return None
+        self.state.append(new_state) # 添加一个棋步
 
 
 class GoBoard:
@@ -18,7 +66,6 @@ class GoBoard:
     def __init__(self, board_size=19):
         self.size = board_size
         self.board = np.zeros((board_size, board_size), dtype=int)
-        # self.board = np.random.randint(-1, 2, (board_size, board_size))
         self.current_player = "black"
         # 处理“劫”规则
         self.last_ko_position = None  # 劫的位置
