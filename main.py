@@ -5,8 +5,8 @@
 # id: 8a955a873923ce1ded0074ac98fad4e1
 # description: 一个简单的围棋程序
 #------------------------------------------------
-from gui import GoGUI
-from tui import GoTUI
+from src.gui import GoGUI
+from src.tui import GoTUI
 
 if __name__ == "__main__":
     # 文本用户界面

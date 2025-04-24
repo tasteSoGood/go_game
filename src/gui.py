@@ -7,8 +7,7 @@
 #------------------------------------------------
 import tkinter as tk
 from tkinter import messagebox
-from backend import GoBoard
-from gnugo_ai import GnugoAI
+from src.backend import GoBoard, GnugoAI
 
 
 class GoGUI(tk.Tk):

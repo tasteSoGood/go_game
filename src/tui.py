@@ -6,8 +6,8 @@
 # description: 命令行用户界面
 #------------------------------------------------
 import os
-from backend import GoBoard
-from gnugo_ai import GnugoAI
+from src.backend import GoBoard, GnugoAI
+
 
 class GoTUI:
     def __init__(self, board_size=19, ai=False):
