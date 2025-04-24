@@ -7,7 +7,7 @@
 #------------------------------------------------
 import tkinter as tk
 from tkinter import messagebox
-from src.backend import GoBoard, GnugoAI
+from src.backend import TempGoBoard, GnugoAI
 
 
 class GoGUI(tk.Tk):
@@ -20,7 +20,7 @@ class GoGUI(tk.Tk):
         if ai:
             self.board = GnugoAI(board_size) # 后台棋盘类
         else:
-            self.board = GoBoard(board_size)
+            self.board = TempGoBoard(board_size)
         self.init_ui()
 
     def init_ui(self):
@@ -79,7 +79,7 @@ class GoGUI(tk.Tk):
             self.canvas.delete("all")
             self.draw_grid()
             self.draw_stone()
-            if self.ai and self.board.current_player == "white":
+            if self.ai and self.board.cur_player == "white":
                 self.board.ai_move()
                 self.canvas.delete("all")
                 self.draw_grid()
@@ -95,9 +95,9 @@ class GoGUI(tk.Tk):
             for j in range(self.board.size):
                 cx = self.cell_size * (i + 1)
                 cy = self.cell_size * (j + 1)
-                if self.board.board[i, j] == 1:
+                if self.board.cur_board[i, j] == 1:
                     color = "white"
-                elif self.board.board[i, j] == -1:
+                elif self.board.cur_board[i, j] == -1:
                     color = "black"
                 else:
                     continue

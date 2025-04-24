@@ -53,3 +53,4 @@ class DoubleLink:
         """清空，回到最初状态"""
         if self.head:
             self.head.next = None
+            self.tail = self.head
