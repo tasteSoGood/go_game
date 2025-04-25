@@ -34,11 +34,15 @@ class DoubleLink:
     def next_state(self):
         if self.tail and self.tail.next:
             return self.tail.next.value
+        if self.tail:
+            return self.tail.value
         return None
 
     def previous_state(self):
         if self.tail and self.tail.front:
             return self.tail.front.value
+        if self.tail:
+            return self.tail.value
         return None
 
     def move_next(self):

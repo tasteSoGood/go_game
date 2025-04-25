@@ -38,6 +38,18 @@ class Board:
     def cur_move(self):
         return self.state.current_state()['move']
 
+    @property
+    def pre_board(self):
+        return self.state.previous_state()['board'].copy()
+
+    @property
+    def pre_player(self):
+        return self.state.previous_state()['player']
+
+    @property
+    def pre_move(self):
+        return self.state.previous_state()['move']
+
     def undo(self):
         self.state.move_previous()
 
@@ -63,9 +75,6 @@ class Board:
 class GoBoard(Board):
     def __init__(self, board_size=19):
         super().__init__(board_size)
-        # 处理“劫”规则
-        self.last_ko_position = None  # 劫的位置
-        self.last_ko_player = None    # 上次触发劫的玩家
 
     def rule(self, move):
         current_board  = self.cur_board  # 获取当前的棋盘状态
@@ -79,10 +88,13 @@ class GoBoard(Board):
         if current_board[x, y] != 0: # 已经有子了
             return None
 
-        # 劫争检查：禁止立即回提，至少需要间隔一手
-        if self.last_ko_position and (x, y) == self.last_ko_position:
-            if current_player != self.last_ko_player:
-                return None
+        # 处理“劫”规则
+        color = 1 if current_player == 'white' else -1
+        last_captured = np.sum(
+            np.logical_xor(current_board == color, self.pre_board == color)
+        ) # 计算上次提子数
+        if last_captured == 1 and self.pre_move == move:
+            return None
 
         # 创建一个临时棋盘用于模拟落子之后的状态
         current_color = 1 if current_player == "white" else -1
@@ -104,14 +116,6 @@ class GoBoard(Board):
         my_qi, _ = self.cal_group_qi(x, y, temp_board)
         if my_qi == 0 and len(enemy_captured) == 0:
             return False # 禁止自杀行为（模拟结果：没有提掉对方的子，新落的子的气还为0）
-
-        # 记录劫的状态
-        if len(enemy_captured) == 1: # 只提掉对方一个子，此时构成了劫
-            self.last_ko_position = enemy_captured[0]
-            self.last_ko_player = current_player
-        else:
-            self.last_ko_position = None
-            self.last_ko_player = None
 
         # 模拟成功，返回状态
         return {

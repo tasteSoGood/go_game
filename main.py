@@ -9,10 +9,10 @@ from src.gui import GoGUI
 from src.tui import GoTUI
 
 if __name__ == "__main__":
-    # 文本用户界面
-    game = GoTUI(board_size=19, ai=False)
-    game.run()
-    # # 窗口用户界面
-    # game = GoGUI(board_size=19)
-    # game.mainloop()
+    # # 文本用户界面
+    # game = GoTUI(board_size=19, ai=False)
+    # game.run()
+    # 窗口用户界面
+    game = GoGUI(board_size=19)
+    game.mainloop()
 
