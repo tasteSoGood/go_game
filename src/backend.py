@@ -72,7 +72,68 @@ class Board:
         return True
 
 
+class WuziqiBoard(Board):
+    """
+    五子棋类
+    """
+    def __init__(self, board_size=19):
+        super().__init__(board_size)
+
+    def rule(self, move):
+        if not (0 <= move[0] < self.size and 0 <= move[1] < self.size): # 越界
+            return None
+        if self.cur_board[*move] != 0: # 已经有子了
+            return None
+        # 如果赢了，就不能再下了
+        if self.is_win():
+            return None
+        new_board = self.cur_board.copy()
+        new_board[*move] = 1 if self.cur_player == "white" else -1
+
+        return {
+            "board": new_board,
+            "player": "white" if self.cur_player == "black" else "black",
+            "move": move,
+        }
+
+    def is_win(self):
+        for i in range(self.size):
+            if self._find_consecutive(self.cur_board[i], 5): # 行检查
+                return True
+            if self._find_consecutive(self.cur_board[:, i], 5): # 列检查
+                return True
+        # 遍历主、副对角线
+        for offset in range(-self.size + 1, self.size):
+            if self._find_consecutive(self.cur_board.diagonal(offset), 5):
+                return True
+            if self._find_consecutive(np.fliplr(self.cur_board).diagonal(offset), 5):
+                return True
+        return False
+
+    def _find_consecutive(self, arr, n):
+        """判断列表arr中是否存在n个连续相同的元素"""
+        if n <= 0:
+            return False
+        current_val, count = None, 0
+        for num in arr:
+            if num != 0:
+                if current_val is None:
+                    current_val, count = num, 1
+                elif num == current_val:
+                    count += 1
+                    if count >= n:
+                        return True
+                else:
+                    current_val, count = None, 0
+            else:
+                current_val, count = None, 0
+    
+
+
 class GoBoard(Board):
+    """
+    围棋类
+    """
     def __init__(self, board_size=19):
         super().__init__(board_size)
 
@@ -115,7 +176,7 @@ class GoBoard(Board):
         # 模拟提子后检查自己的气
         my_qi, _ = self.cal_group_qi(x, y, temp_board)
         if my_qi == 0 and len(enemy_captured) == 0:
-            return False # 禁止自杀行为（模拟结果：没有提掉对方的子，新落的子的气还为0）
+            return None # 禁止自杀行为（模拟结果：没有提掉对方的子，新落的子的气还为0）
 
         # 模拟成功，返回状态
         return {
