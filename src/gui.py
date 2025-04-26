@@ -20,8 +20,8 @@ class GoGUI(tk.Tk):
         if ai:
             self.board = GnugoAI(board_size) # 后台棋盘类
         else:
-            # self.board = GoBoard(board_size)
-            self.board = WuziqiBoard(board_size)
+            self.board = GoBoard(board_size)
+            # self.board = WuziqiBoard(board_size)
         self.init_ui()
 
     def init_ui(self):
