@@ -112,22 +112,17 @@ class WuziqiBoard(Board):
 
     def _find_consecutive(self, arr, n):
         """判断列表arr中是否存在n个连续相同的元素"""
-        if n <= 0:
+        if n <= 0 or len(arr) < n:
             return False
-        current_val, count = None, 0
-        for num in arr:
-            if num != 0:
-                if current_val is None:
-                    current_val, count = num, 1
-                elif num == current_val:
-                    count += 1
-                    if count >= n:
-                        return True
-                else:
-                    current_val, count = None, 0
-            else:
-                current_val, count = None, 0
-    
+        template = np.array([1] * n)
+        white_arr = (arr == 1).astype(int)
+        black_arr = (arr == -1).astype(int)
+        for i in range(len(arr) - n):
+            if np.sum(template * white_arr[i:i+n]) == n:
+                return True
+            if np.sum(template * black_arr[i:i+n]) == n:
+                return True
+        return False
 
 
 class GoBoard(Board):
